@@ -12,7 +12,7 @@ def count_painted_within_square(prefix_sums, row, col, size):
 
 
 def find_suitable_rows(prefix_sums, limit):
-    return [(r, row) for r, row in enumerate(prefix_sums) if row and row[-1] > limit]
+    return [(r, row) for r, row in enumerate(prefix_sums) if row and row[-1] >= limit]
 
 
 def get_prefix_sums(listStr):
@@ -227,15 +227,14 @@ def generate_commands(facade, brush_size, suitable_row_limit, suitable_col_limit
 
 
 def main():
-    listStr = read_facade('/tmp/small.txt')
     listStr = read_facade('inputs/small.txt')
-    # listStr = read_facade('/tmp/doodle.txt')
+    # listStr = read_facade('inputs/doodle.txt')
     facade = parseInput(listStr)
-    commands = generate_commands(facade, 3, 2, 3)
-    print('\n'.join([' '.join([str(s) for s in x]) for x in commands]))
+    # commands = generate_commands(facade, 31, 31, 31)
+    commands = generate_commands(facade, 3, 3, 3)
+    print_commands(commands)
     facade = create_blank_facade(len(listStr), len(listStr[0]))
     apply_commands(facade, commands)
-    print('\n'.join(facade))
     # write_facade(facade, '/tmp/facade.txt')
 
 

@@ -12,9 +12,9 @@ class TestFacade(unittest.TestCase):
     def test_find_suitable_rows(self):
         self.assertEquals([], facade.find_suitable_rows([[]], 3))
         self.assertEquals([(0, [0, 1, 2, 3]), (1, [0, 1, 2, 3])],
-                          facade.find_suitable_rows([[0, 1, 2, 3], [0, 1, 2, 3], [0, 0, 1, 1]], 2))
+                          facade.find_suitable_rows([[0, 1, 2, 3], [0, 1, 2, 3], [0, 0, 1, 1]], 3))
         self.assertEquals([(0, [0, 1, 2, 3])],
-                          facade.find_suitable_rows([[0, 1, 2, 3], [0, 1, 2, 2], [0, 0, 1, 1]], 2))
+                          facade.find_suitable_rows([[0, 1, 2, 3], [0, 1, 2, 2], [0, 0, 1, 1]], 3))
 
     def test_prefix_sums(self):
         self.assertEquals([[0, 1, 2, 3]], facade.get_prefix_sums(['111']))
@@ -102,7 +102,7 @@ class TestFacade(unittest.TestCase):
              [0, 0, 0, 0, 0, 1, 1, 1]], prefix_sums)
 
         brush_size = 3
-        suitable_row_limit = 2
+        suitable_row_limit = 3
         suitable_col_limit = 3
 
         suitable_rows = facade.find_suitable_rows(prefix_sums, suitable_row_limit)
