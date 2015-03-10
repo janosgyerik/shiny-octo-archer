@@ -127,6 +127,16 @@ def apply_commands(facade, commands):
     return facade
 
 
+def write_commands(commands, path):
+    with open(path, 'w') as fh:
+        fh.write('{}\n'.format(len(commands)))
+        for command in commands:
+            if command[0]:
+                fh.write('PAINTSQ {} {} {}\n'.format(*command[1:]))
+            else:
+                fh.write('ERASECELL {} {}\n'.format(*command[1:3]))
+
+
 def find_suitable_cols(row_prefix_sums, brush_size, min_painted):
     cols = []
     for col in range(len(row_prefix_sums) - brush_size):
@@ -228,8 +238,8 @@ def generate_commands(facade, brush_size, suitable_row_limit, suitable_col_limit
 
 
 def main():
-    # listStr = read_facade('inputs/small.txt')
-    listStr = read_facade('inputs/doodle.txt')
+    listStr = read_facade('inputs/small.txt')
+    # listStr = read_facade('inputs/doodle.txt')
     facade = parseInput(listStr)
     # commands = generate_commands(facade, 31, 31, 31)  # 147879
     commands = generate_commands(facade, 3, 3, 3)  # 170445
@@ -247,7 +257,9 @@ def main():
 
     facade = create_blank_facade(len(listStr), len(listStr[0]))
     apply_commands(facade, commands)
-    write_facade(facade, '/tmp/facade.txt')
+
+    write_facade(facade, 'outputs/facade.txt')
+    write_commands(commands, 'outputs/commands.txt')
 
 
 if __name__ == '__main__':
