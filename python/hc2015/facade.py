@@ -11,20 +11,8 @@ def count_painted_within_square(prefix_sums, row, col, size):
     return count
 
 
-def test_count_painted_within_square():
-    assert 0 == count_painted_within_square([[]], 3, 3, 10)
-    assert 9 == count_painted_within_square([[0, 1, 2, 3], [0, 1, 2, 3], [0, 1, 2, 3]], 0, 0, 3)
-    assert 7 == count_painted_within_square([[0, 1, 2, 3], [0, 1, 2, 3], [0, 0, 1, 1]], 0, 0, 3)
-
-
 def find_suitable_rows(prefix_sums, limit):
     return [(r, row) for r, row in enumerate(prefix_sums) if row and row[-1] > limit]
-
-
-def test_find_suitable_rows():
-    assert [] == find_suitable_rows([[]], 3)
-    assert [[0, 1, 2, 3], [0, 1, 2, 3]] == find_suitable_rows([[0, 1, 2, 3], [0, 1, 2, 3], [0, 0, 1, 1]], 2)
-    assert [[0, 1, 2, 3]] == find_suitable_rows([[0, 1, 2, 3], [0, 1, 2, 2], [0, 0, 1, 1]], 2)
 
 
 def get_prefix_sums(listStr):
@@ -38,13 +26,6 @@ def get_prefix_sums(listStr):
             prefixs[i + 1] = total
         prefixRows.append(prefixs)
     return prefixRows
-
-
-def test_prefix_sums():
-    assert [[0, 1, 2, 3]] == get_prefix_sums(['111'])
-    assert [[0, 1, 2, 2]] == get_prefix_sums(['110'])
-    assert [[0, 0, 1, 1]] == get_prefix_sums(['010'])
-    assert [[0, 0, 0, 0]] == get_prefix_sums(['000'])
 
 
 def paint(commands_file):
@@ -91,10 +72,6 @@ def parseInput(listStr):
     return lstStr
 
 
-def test_parseInput():
-    assert ['00001111', '11111111', '0000', '00001011'] == parseInput(['....####', '########', '....', '....#.##'])
-
-
 def get_cells_to_paint(facade):
     cells = set()
     for r, row in enumerate(facade):
@@ -102,13 +79,6 @@ def get_cells_to_paint(facade):
             if col == '1':
                 cells.add((r, c))
     return cells
-
-
-def test_get_cells_to_paint():
-    assert set() == get_cells_to_paint(['000'])
-    assert set() == get_cells_to_paint(['000', '000', '000'])
-    assert {(2, 1)} == get_cells_to_paint(['000', '000', '010'])
-    assert {(1, 0), (1, 1), (2, 1)} == get_cells_to_paint(['000', '110', '010'])
 
 
 def remove_painted_cells(cells_to_paint, row, col, brush_size):
@@ -121,26 +91,6 @@ def remove_painted_cells(cells_to_paint, row, col, brush_size):
                 cells_to_paint.remove((r, c))
 
 
-def test_remove_painted_cells():
-    cells_to_paint0 = {(1, 0), (1, 1), (2, 1)}
-
-    cells_to_paint = set(cells_to_paint0)
-    remove_painted_cells(cells_to_paint, 0, 0, 3)
-    assert set() == cells_to_paint
-
-    cells_to_paint = set(cells_to_paint0)
-    remove_painted_cells(cells_to_paint, 1, 1, 3)
-    assert {(1, 0)} == cells_to_paint
-
-    cells_to_paint = set(cells_to_paint0)
-    remove_painted_cells(cells_to_paint, 2, 1, 3)
-    assert {(1, 0), (1, 1)} == cells_to_paint
-
-    cells_to_paint = set(cells_to_paint0)
-    remove_painted_cells(cells_to_paint, 1, 2, 3)
-    assert cells_to_paint0 == cells_to_paint
-
-
 def get_blanks_within_square(facade, row, col, brush_size):
     cells = []
     for i in range(brush_size):
@@ -151,13 +101,6 @@ def get_blanks_within_square(facade, row, col, brush_size):
             if value == '0':
                 cells.append((r, c))
     return cells
-
-
-def test_get_blanks_within_square():
-    assert [(0, 0), (0, 1), (0, 2), (2, 0), (2, 2)] == get_blanks_within_square(['000', '111', '010'], 0, 0, 3)
-    assert [(0, 0), (2, 0)] == get_blanks_within_square(['011', '111', '011'], 0, 0, 3)
-    assert [] == get_blanks_within_square(['0111', '1111', '0111', '1111'], 1, 1, 3)
-    assert [(3, 3)] == get_blanks_within_square(['0111', '1111', '0111', '1110'], 1, 1, 3)
 
 
 def replaceInRange(src, first, last, character):
@@ -184,30 +127,12 @@ def apply_commands(facade, commands):
     return facade
 
 
-def test_apply_commands():
-    commands = [[True, 2, 2, 1], [False, 2, 2, None]]
-    facade = [''.join(4 * ['0']), ''.join(4 * ['0']), ''.join(4 * ['0']), ''.join(4 * ['0']), ''.join(4 * ['0'])]
-    assert apply_commands(facade, commands) == ['0000', '0111', '0101', '0111', '0000']
-    commands = [[True, 2, 2, 2], [False, 1, 1, None], [False, 1, 2, None], [False, 1, 3, None], [False, 4, 0, None],
-                [False, 4, 1, None]]
-    facade = [''.join(7 * ['0']), ''.join(7 * ['0']), ''.join(7 * ['0']), ''.join(7 * ['0']), ''.join(7 * ['0']),
-              ''.join(7 * ['0'])]
-    assert apply_commands(facade, commands) == ['1111100', '1000100', '1111100', '1111100', '0011100', '0000000']
-
-
 def find_suitable_cols(row_prefix_sums, brush_size, min_painted):
     cols = []
     for col in range(len(row_prefix_sums) - brush_size):
         if row_prefix_sums[col + brush_size] - row_prefix_sums[col] >= min_painted:
             cols.append(col)
     return cols
-
-
-def test_find_suitable_cols():
-    assert [0] == find_suitable_cols([0, 1, 2, 3], 3, 3)
-    assert [] == find_suitable_cols([0, 1, 2, 3], 2, 3)
-    assert [3] == find_suitable_cols([0, 1, 1, 1, 2, 2, 3, 4, 4, 4], 4, 3)
-    assert [0, 4, 5] == find_suitable_cols([0, 1, 2, 3, 3, 3, 4, 5, 6, 6], 4, 3)
 
 
 def paint(path_to_file, numOfRows, numOfCols):
@@ -262,15 +187,6 @@ def create_blank_facade(row, col):
     return facade
 
 
-def test_create_blank_facade():
-    print create_blank_facade(4, 5)
-    print '**********************'
-    print create_blank_facade(5, 5)
-    print '**********************'
-    print create_blank_facade(7, 8)
-    print '**********************'
-
-
 def write_facade(facade, path):
    f = open(path, 'w')
    for row in facade:
@@ -278,10 +194,6 @@ def write_facade(facade, path):
        nrow = nrow.replace('1','#')
        f.write(nrow + '\n')
    f.close()
-
-
-def test_write_facade():
-    write_facade(create_blank_facade(1000, 1000), 'output.txt')
 
 
 def generate_commands(listStr):
@@ -321,20 +233,6 @@ def main():
     facade = create_blank_facade(len(listStr), len(listStr[0]))
     apply_commands(facade, commands)
     write_facade(facade, '/tmp/facade.txt')
-
-
-def run_tests():
-    test_count_painted_within_square()
-    test_find_suitable_rows()
-    test_prefix_sums()
-    test_parseInput()
-    test_get_cells_to_paint()
-    test_remove_painted_cells()
-    test_get_blanks_within_square()
-    test_apply_commands()
-    test_find_suitable_cols()
-    # test_write_facade()
-    test_create_blank_facade()
 
 
 if __name__ == '__main__':
