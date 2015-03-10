@@ -85,6 +85,38 @@ class TestFacade(unittest.TestCase):
         pass
         # write_facade(create_blank_facade(1000, 1000), 'output.txt')
 
+    def test_small_example(self):
+        data = [
+            '0010000',
+            '0011100',
+            '0010100',
+            '0011100',
+            '0000100'
+        ]
+        prefix_sums = facade.get_prefix_sums(data)
+        self.assertEquals(
+            [[0, 0, 0, 1, 1, 1, 1, 1],
+             [0, 0, 0, 1, 2, 3, 3, 3],
+             [0, 0, 0, 1, 1, 2, 2, 2],
+             [0, 0, 0, 1, 2, 3, 3, 3],
+             [0, 0, 0, 0, 0, 1, 1, 1]], prefix_sums)
+
+        brush_size = 3
+        suitable_row_limit = 2
+        suitable_col_limit = 3
+
+        suitable_rows = facade.find_suitable_rows(prefix_sums, suitable_row_limit)
+        self.assertEquals([(1, [0, 0, 0, 1, 2, 3, 3, 3]), (3, [0, 0, 0, 1, 2, 3, 3, 3])],
+                          suitable_rows)
+
+        suitable_cols1 = facade.find_suitable_cols(suitable_rows[0][1], brush_size, suitable_col_limit)
+        self.assertEquals([2], suitable_cols1)
+        suitable_cols2 = facade.find_suitable_cols(suitable_rows[1][1], brush_size, suitable_col_limit)
+        self.assertEquals([2], suitable_cols2)
+
+        commands = facade.generate_commands(data, brush_size, suitable_row_limit, suitable_col_limit)
+        self.assertEquals([[True, 2, 3, 1], [True, 4, 4, 0], [True, 0, 2, 0], (False, 2, 3, None)], commands)
+
 
 if __name__ == '__main__':
     unittest.main()

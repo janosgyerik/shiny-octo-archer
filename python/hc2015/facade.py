@@ -196,24 +196,24 @@ def write_facade(facade, path):
     f.close()
 
 
-def generate_commands(listStr):
-    facade = parseInput(listStr)
-    prefix_sums = get_prefix_sums(facade)
+def print_commands(commands):
+    print('\n'.join([' '.join([str(s) for s in x]) for x in commands]))
 
+
+def generate_commands(facade, brush_size, suitable_row_limit, suitable_col_limit):
+    prefix_sums = get_prefix_sums(facade)
     cells_to_paint = get_cells_to_paint(facade)
 
     paint_commands = []
     erase_commands = set()
 
-    brush_size = 31
-    suitable_row_limit = 31
-    suitable_col_limit = 31
+    worth_using_brush_limit = brush_size * brush_size // 2 + 2
 
     for r, row in find_suitable_rows(prefix_sums, suitable_row_limit):
         for col in find_suitable_cols(row, brush_size, suitable_col_limit):
-            if count_painted_within_square(prefix_sums, r, col, brush_size):
+            if count_painted_within_square(prefix_sums, r, col, brush_size) > worth_using_brush_limit:
                 real_brush_size = brush_size // 2
-                paint_commands.append([True, r, col, real_brush_size])
+                paint_commands.append([True, r + real_brush_size, col + real_brush_size, real_brush_size])
 
                 remove_painted_cells(cells_to_paint, r, col, brush_size)
 
@@ -227,12 +227,16 @@ def generate_commands(listStr):
 
 
 def main():
-    # listStr = read_facade('/tmp/small.txt')
-    listStr = read_facade('/tmp/doodle.txt')
-    commands = generate_commands(listStr)
+    listStr = read_facade('/tmp/small.txt')
+    listStr = read_facade('inputs/small.txt')
+    # listStr = read_facade('/tmp/doodle.txt')
+    facade = parseInput(listStr)
+    commands = generate_commands(facade, 3, 2, 3)
+    print('\n'.join([' '.join([str(s) for s in x]) for x in commands]))
     facade = create_blank_facade(len(listStr), len(listStr[0]))
     apply_commands(facade, commands)
-    write_facade(facade, '/tmp/facade.txt')
+    print('\n'.join(facade))
+    # write_facade(facade, '/tmp/facade.txt')
 
 
 if __name__ == '__main__':
