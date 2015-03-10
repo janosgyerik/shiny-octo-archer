@@ -227,15 +227,19 @@ def generate_commands(facade, brush_size, suitable_row_limit, suitable_col_limit
 
 
 def main():
-    listStr = read_facade('inputs/small.txt')
-    # listStr = read_facade('inputs/doodle.txt')
+    # listStr = read_facade('inputs/small.txt')
+    listStr = read_facade('inputs/doodle.txt')
     facade = parseInput(listStr)
-    # commands = generate_commands(facade, 31, 31, 31)
+    # commands = generate_commands(facade, 31, 31, 31)  # -> 147879
     commands = generate_commands(facade, 3, 3, 3)
-    print_commands(commands)
+    # print_commands(commands)
+
+    # note: points to paint in the big example: 185309
+    print(len(commands))
+
     facade = create_blank_facade(len(listStr), len(listStr[0]))
     apply_commands(facade, commands)
-    # write_facade(facade, '/tmp/facade.txt')
+    write_facade(facade, '/tmp/facade.txt')
 
 
 if __name__ == '__main__':
