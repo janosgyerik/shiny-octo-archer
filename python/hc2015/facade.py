@@ -233,6 +233,13 @@ def main():
     facade = parseInput(listStr)
     # commands = generate_commands(facade, 31, 31, 31)  # 147879
     commands = generate_commands(facade, 3, 3, 3)  # 170445
+    # commands = generate_commands(facade, 5, 5, 5)  # 170899
+    # commands = generate_commands(facade, 7, 7, 7)  # 167394
+    # commands = generate_commands(facade, 17, 17, 17)  # 155689
+    # commands = generate_commands(facade, 117, 117, 117)  # 183245
+    # commands = generate_commands(facade, 57, 57, 57)  # 172837
+    # commands = generate_commands(facade, 33, 33, 33)  # 147881
+    # commands = generate_commands(facade, 29, 29, 29)  # 148198
     # print_commands(commands)
 
     # note: points to paint in the big example: 185309
