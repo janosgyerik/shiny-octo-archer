@@ -28,36 +28,6 @@ def get_prefix_sums(listStr):
     return prefixRows
 
 
-def paint(commands_file):
-    fo = open(commands_file, "r+")
-    numOfLines = fo.readline()
-    Matrix = [[0 for x in range(716)] for x in range(1522)]
-    for i in range(185309):
-        str1 = fo.readline()
-        strings = str1.split()
-        if (strings[0] == "PAINTSQ"):
-            row_lower = int(strings[1]) - int(strings[3])
-            row_upper = int(strings[1]) + int(strings[3])
-            col_lower = int(strings[2]) - int(strings[3])
-            col_upper = int(strings[2]) + int(strings[3])
-
-            for j in range(row_lower, row_upper):
-                for k in range(col_lower, col_upper):
-                    Matrix[i, j] = 1
-        else:
-            Matrix[strings[1], strings[2]] = 0
-    fo.close()
-    fo2 = open("/tmp/painted.txt", "w")
-    for i in range(716):
-        for j in range(1522):
-            if Matrix[i, j] == 0:
-                fo2.write(".")
-            else:
-                fo2.write("#")
-        fo2.write("\n")
-    return 0
-
-
 def parseInput(listStr):
     lstStr = []
     for st in listStr:
