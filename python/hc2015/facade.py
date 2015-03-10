@@ -189,6 +189,7 @@ def create_blank_facade(row, col):
 
 def write_facade(facade, path):
     f = open(path, 'w')
+    f.write('{} {}\n'.format(len(facade), len(facade[0])))
     for row in facade:
         nrow = row.replace('0', '.')
         nrow = nrow.replace('1', '#')
@@ -230,8 +231,8 @@ def main():
     # listStr = read_facade('inputs/small.txt')
     listStr = read_facade('inputs/doodle.txt')
     facade = parseInput(listStr)
-    # commands = generate_commands(facade, 31, 31, 31)  # -> 147879
-    commands = generate_commands(facade, 3, 3, 3)
+    # commands = generate_commands(facade, 31, 31, 31)  # 147879
+    commands = generate_commands(facade, 3, 3, 3)  # 170445
     # print_commands(commands)
 
     # note: points to paint in the big example: 185309
