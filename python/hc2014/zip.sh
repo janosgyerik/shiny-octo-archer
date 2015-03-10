@@ -1,3 +1,3 @@
 #!/bin/sh
 
-git archive master -o aliens.zip
+git archive master -o outputs/aliens.zip
