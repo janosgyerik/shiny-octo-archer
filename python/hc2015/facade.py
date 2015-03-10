@@ -188,12 +188,12 @@ def create_blank_facade(row, col):
 
 
 def write_facade(facade, path):
-   f = open(path, 'w')
-   for row in facade:
-       nrow = row.replace('0','.')
-       nrow = nrow.replace('1','#')
-       f.write(nrow + '\n')
-   f.close()
+    f = open(path, 'w')
+    for row in facade:
+        nrow = row.replace('0', '.')
+        nrow = nrow.replace('1', '#')
+        f.write(nrow + '\n')
+    f.close()
 
 
 def generate_commands(listStr):
