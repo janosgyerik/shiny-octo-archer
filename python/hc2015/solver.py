@@ -1,40 +1,208 @@
-def find_leader(arr):
-    """
-    Let us consider a sequence a0, a1, ..., an-1
-    The leader of this sequence is the element whose value occurs more than n times.
-    :param arr: the sequence
-    :return: leader if exists, or else None
-    """
-    size = 0
-    candidate = None
-    for num in arr:
-        if size == 0:
-            candidate = num
-            size = 1
-        elif candidate == num:
-            size += 1
+from __future__ import division
+
+
+class Server:
+    def __init__(self, capacity, size):
+        self.capacity = capacity
+        self.size = size
+        self.pool = None
+        self.row = None
+        self.score = capacity * capacity / size
+        self.slot = None
+
+    def add_to_pool(self, pool):
+        pool.add(self)
+        self.pool = pool
+
+    def add_to_row(self, row):
+        row.add(self)
+        self.row = row
+
+    def __repr__(self):
+        return '{} {}'.format(self.capacity, self.size)
+
+
+class Pool:
+    def __init__(self, pool_num):
+        self.pool_num = pool_num
+        self.servers = []
+
+    def add(self, server):
+        self.servers.append(server)
+
+    def calc_guaranteed_capacity(self):
+        dic = {}
+        total = 0
+        for server in self.servers:
+            if server.pool is self:
+                row = server.row
+                if row in dic:
+                    dic[row] += server.capacity
+                else:
+                    dic[row] = server.capacity
+                total += server.capacity
+
+        guaranteed_capacity = total
+
+        for key in dic.keys():
+            row_capacity = dic[key]
+            if total - row_capacity < guaranteed_capacity:
+                guaranteed_capacity = total - row_capacity
+
+        return guaranteed_capacity
+
+    def __str__(self):
+        return str(self.pool_num)
+
+
+def find_worst_pool(pools):
+    if len(pools) < 1:
+        return None
+
+    # initiate minimum capacity and minimum pool
+    first_pool = pools[0]
+    min_capacity = first_pool.calc_guaranteed_capacity()
+    min_pool = first_pool
+    # go through all the pools and compare them to the minimum
+    for pool in pools:
+        if pool.calc_guaranteed_capacity() < min_capacity:
+            min_capacity = pool.calc_guaranteed_capacity()
+            min_pool = pool
+
+    return min_pool
+
+
+class Row:
+    def __init__(self, row_num, slots_num):
+        self.row_num = row_num
+        self.servers = []
+        self.slots = [True] * slots_num
+
+    def add(self, server):
+        self.servers.append(server)
+
+    def mark_unavailable(self, start, size):
+        for i in range(start, start + size):
+            self.slots[i] = False
+
+    def get_available_slot(self, space):
+        start = 0
+        end = 0
+        while end < len(self.slots):
+            if self.slots[end]:
+                if end - start + 1 >= space:
+                    return start
+                end += 1
+            else:
+                end += 1
+                start = end
+        return None
+
+    def add_server(self, server):
+        slot = self.get_available_slot(server.size)
+        if slot is not None:
+            server.slot = slot
+            server.row = self
+            self.mark_unavailable(slot, server.size)
+            self.add(server)
+            return True
+        return False
+
+    def __str__(self):
+        return str(self.row_num)
+
+
+def sort_pools_by_guaranteed_capacity(pools):
+    pools.sort(key=lambda pool: pool.calc_guaranteed_capacity())
+
+
+def sort_rows_by_pool_use(rows, pool):
+    for row in rows:
+        sum = 0
+        for server in row.servers:
+            if server in pool.servers:
+                sum += server.capacity
+        row.sum = sum
+    rows.sort(key=lambda row: row.sum)
+
+
+def allocate_servers(servers, pools, rows):
+    servers.sort(key=lambda server: server.score, reverse=True)
+    for server in servers:
+        sort_pools_by_guaranteed_capacity(pools)
+        pool = pools[0]
+        server.add_to_pool(pool)
+
+        sort_rows_by_pool_use(rows, pool)
+        for row in rows:
+            if row.add_server(server):
+                break
+
+
+def get_server_rank(servers):
+    newlist = sorted(servers, key=lambda server: server.score, reverse=True)
+    return newlist
+
+
+def parse_input(path):
+    file = open(path, 'r+')
+
+    line = file.readline()
+    rows_num, slots_num, unavailable_slots_num, pools_num, servers_num = (int(i) for i in line.split())
+
+    rows = [Row(row_num, slots_num) for row_num in range(rows_num)]
+    servers = []
+
+    for i in xrange(unavailable_slots_num):
+        line = file.readline()
+        row_num, slot_num = (int(i) for i in line.split())
+        row = rows[row_num]
+        row.mark_unavailable(slot_num, 1)
+
+    for i in xrange(servers_num):
+        line = file.readline()
+        size, capacity = (int(i) for i in line.split())
+        servers.append(Server(capacity, size))
+
+    # close the input file
+    file.close()
+
+    # return the outputs
+    return pools_num, rows, servers
+
+
+def generate_output(servers, path_to_output):
+    fo = open(path_to_output, "w")
+
+    for server in servers:
+        if server.row is None:
+            fo.write("x\n")
         else:
-            size -= 1
+            fo.write(str(server.row) + " " + str(server.slot) + " " + str(server.pool) + "\n")
 
-    if size > 0:
-        if arr.count(candidate) > len(arr) // 2:
-            return candidate
-
-    return None
+    fo.close()
 
 
 def main():
-    pass
-    # data = parse_input('inputs/small.txt')
-    # data = parse_input('inputs/large.txt')
-    # data = parse_input('inputs/other.txt')
-    #
-    # commands = solve(data)
-    # output = apply_commands(commands)
-    #
+    # pools_num, rows, servers = parse_input('inputs/small.txt')
+    pools_num, rows, servers = parse_input('inputs/large.txt')
+    servers_copy = servers[:]
+
+    pools = [Pool(pool_num) for pool_num in range(pools_num)]
+    allocate_servers(servers, pools, rows)
+
+    for pool in pools:
+        print pool.servers
+    for row in rows:
+        print row.servers
+
+    generate_output(servers_copy, 'outputs/commands.txt')
+
     # write_output(output, 'outputs/output-small.txt')
     # write_commands(commands, 'outputs/commands.txt')
 
 
 if __name__ == '__main__':
     main()
+
+

@@ -1,45 +1,31 @@
 import unittest
 
 # memo: keyboard shortcuts in PyCharm:
-#   run all tests:      Control Shift R
-#   run single test:    inside the test method body, Control Shift R
+# run all tests:      Control Shift R
+# run single test:    inside the test method body, Control Shift R
 #   re-run last:        Control R
 
 import solver
-
-
-class TestSolverExample(unittest.TestCase):
-    def test_find_leader_6_8_4_6_8_6_6(self):
-        self.assertEquals(6, solver.find_leader([6, 8, 4, 6, 8, 6, 6]))
-
-    def test_find_leader_6_8_6(self):
-        self.assertEquals(6, solver.find_leader([6, 8, 6]))
-
-    def test_find_leader_6_6(self):
-        self.assertEquals(6, solver.find_leader([6, 6]))
-
-    def test_find_leader_6_7_7_7_6(self):
-        self.assertEquals(7, solver.find_leader([6, 7, 7, 7, 6]))
-
-    def test_find_leader_6_7_7_6(self):
-        self.assertEquals(None, solver.find_leader([6, 7, 7, 6]))
-
-    def test_find_leader_6_7_8(self):
-        self.assertEquals(None, solver.find_leader([6, 7, 8]))
-
-    def test_find_leader_6_7(self):
-        self.assertEquals(None, solver.find_leader([6, 7]))
-
-    def test_find_leader_6(self):
-        self.assertEquals(6, solver.find_leader([6]))
-
-    def test_find_leader_empty(self):
-        self.assertEquals(None, solver.find_leader([]))
+from solver import Server
 
 
 class TestSolver(unittest.TestCase):
-    def test_find_leader_6_8_4_6_8_6_6(self):
-        pass
+    def test_get_server_rank(self):
+        s1, s2, s3 = Server(10, 10), Server(10, 2), Server(10, 5)
+        servers = [s1, s2, s3]
+        expected = [s2, s3, s1]
+        self.assertEquals(expected, solver.get_server_rank(servers))
+
+    def test_parse_input(self):
+        pools_num, rows, servers = solver.parse_input('inputs/small.txt')
+        self.assertEquals(2, pools_num)
+        self.assertEquals(2, len(rows))
+
+    def test_get_available_slot(self):
+        row = solver.Row(8)
+        row.mark_unavailable(0)
+        row.mark_unavailable(2)
+        print row.get_available_slot(4)
 
 
 if __name__ == '__main__':
