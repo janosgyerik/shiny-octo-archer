@@ -97,11 +97,11 @@ def sort_pools_by_guaranteed_capacity(pools):
 
 
 def sort_rows_by_pool_use(rows, pool):
-    for row in rows:
-        # dirty dirty dirty
-        row.sum = sum([server.capacity for server in row.servers if server in pool.servers])
+    pool_use = [sum([server.capacity for server in row.servers if server in pool.servers])
+                for row in rows]
+    pool_use_by_row = dict(zip(rows, pool_use))
     # not great to mutate in-place. would be better to return sorted(...)
-    rows.sort(key=lambda row: row.sum)
+    rows.sort(key=lambda row: pool_use_by_row[row])
 
 
 def servers_sorted_by_score(servers):
