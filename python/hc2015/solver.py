@@ -113,14 +113,16 @@ class Row:
         return str(self.row_num)
 
 
-def pools_sorted_by_guaranteed_capacity(pools):
+def sort_pools_by_guaranteed_capacity(pools):
+    # not great to mutate in-place. would be better to return sorted(...)
     pools.sort(key=lambda pool: pool.calc_guaranteed_capacity())
-    return pools
 
 
 def sort_rows_by_pool_use(rows, pool):
     for row in rows:
+        # dirty dirty dirty
         row.sum = sum([server.capacity for server in row.servers if server in pool.servers])
+    # not great to mutate in-place. would be better to return sorted(...)
     rows.sort(key=lambda row: row.sum)
 
 
@@ -130,7 +132,8 @@ def servers_sorted_by_score(servers):
 
 def allocate_servers(servers, pools, rows):
     for server in servers_sorted_by_score(servers):
-        pool = pools_sorted_by_guaranteed_capacity(pools)[0]
+        sort_pools_by_guaranteed_capacity(pools)
+        pool = pools[0]
         server.add_to_pool(pool)
 
         sort_rows_by_pool_use(rows, pool)
