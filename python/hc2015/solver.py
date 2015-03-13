@@ -28,25 +28,25 @@ class Pool:
         self.servers.append(server)
 
     def calc_guaranteed_capacity(self):
-        dic = {}
-        total = 0
+        row_capacities = {}
+        total_capacity = 0
         for server in self.servers:
             if server.pool is self:
                 row = server.row
-                if row in dic:
-                    dic[row] += server.capacity
+                if row in row_capacities:
+                    row_capacities[row] += server.capacity
                 else:
-                    dic[row] = server.capacity
-                total += server.capacity
+                    row_capacities[row] = server.capacity
+                total_capacity += server.capacity
 
-        guaranteed_capacity = total
+        lowest_capacity = total_capacity
 
-        for key in dic.keys():
-            row_capacity = dic[key]
-            if total - row_capacity < guaranteed_capacity:
-                guaranteed_capacity = total - row_capacity
+        for row_capacity in row_capacities.values():
+            capacity_without_row = total_capacity - row_capacity
+            if capacity_without_row < lowest_capacity:
+                lowest_capacity = capacity_without_row
 
-        return guaranteed_capacity
+        return lowest_capacity
 
     def __str__(self):
         return str(self.pool_num)
