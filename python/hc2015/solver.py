@@ -61,17 +61,17 @@ class Row:
     def mark_unavailable(self, start, size):
         self.slots[start:start + size] = [False for _ in range(size)]
 
-    def get_available_slot(self, space):
+    def get_available_slot(self, target_size):
         start = 0
         end = 0
         while end < len(self.slots):
             if self.slots[end]:
-                if end - start + 1 >= space:
+                if end - start + 1 == target_size:
                     return start
-                end += 1
             else:
-                end += 1
-                start = end
+                start = end + 1
+            end += 1
+
         return None
 
     def add_server(self, server):
