@@ -100,7 +100,7 @@ def sort_rows_by_pool_use(rows, pool):
                 for row in rows]
     pool_use_by_row = dict(zip(rows, pool_use))
     # not great to mutate in-place. would be better to return sorted(...)
-    rows.sort(key=lambda row: pool_use_by_row[row])
+    rows.sort(key=lambda x: pool_use_by_row[x])
 
 
 def servers_sorted_by_score(servers):
