@@ -6,7 +6,7 @@ from solver import Server
 
 class TestSolver(unittest.TestCase):
     def test_get_server_rank(self):
-        big_but_average, small_and_powerful, medium = Server(10, 10), Server(10, 2), Server(10, 5)
+        big_but_average, small_and_powerful, medium = Server(10, 10), Server(2, 10), Server(5, 10)
         servers = [big_but_average, small_and_powerful, medium]
         expected = [small_and_powerful, medium, big_but_average]
         self.assertEquals(expected, solver.servers_sorted_by_score(servers))

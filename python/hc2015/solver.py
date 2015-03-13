@@ -3,9 +3,9 @@ from __future__ import print_function
 
 
 class Server:
-    def __init__(self, capacity, size):
-        self.capacity = capacity
+    def __init__(self, size, capacity):
         self.size = size
+        self.capacity = capacity
         self.score = capacity * capacity / size
         self.pool = None
         self.row = None
@@ -136,7 +136,7 @@ def parse_input(path):
         for _ in range(servers_num):
             line = fh.readline()
             size, capacity = (int(x) for x in line.split())
-            servers.append(Server(capacity, size))
+            servers.append(Server(size, capacity))
 
     pools = [Pool(pool_num) for pool_num in range(pools_num)]
 
