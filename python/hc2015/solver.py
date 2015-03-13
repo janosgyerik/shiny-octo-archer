@@ -143,7 +143,7 @@ def parse_input(path):
     return pools, rows, servers
 
 
-def write_commands(servers, path_to_output):
+def write_allocations(servers, path_to_output):
     with open(path_to_output, "w") as fo:
         for server in servers:
             if server.row is None:
@@ -159,7 +159,7 @@ def main():
 
     allocate_servers(servers, pools, rows)
 
-    write_commands(servers_orig_order, 'outputs/commands.txt')
+    write_allocations(servers_orig_order, 'outputs/commands.txt')
 
 
 if __name__ == '__main__':
