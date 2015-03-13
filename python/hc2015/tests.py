@@ -17,10 +17,10 @@ class TestSolver(unittest.TestCase):
         self.assertEquals(2, len(rows))
 
     def test_get_available_slot(self):
-        row = solver.Row(8)
-        row.mark_unavailable(0)
-        row.mark_unavailable(2)
-        print row.get_available_slot(4)
+        row = solver.Row(0, 8)
+        row.mark_unavailable(0, 1)
+        row.mark_unavailable(2, 1)
+        self.assertEquals(3, row.get_available_slot(4))
 
 
 if __name__ == '__main__':
