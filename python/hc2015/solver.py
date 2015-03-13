@@ -120,11 +120,7 @@ def pools_sorted_by_guaranteed_capacity(pools):
 
 def sort_rows_by_pool_use(rows, pool):
     for row in rows:
-        sum = 0
-        for server in row.servers:
-            if server in pool.servers:
-                sum += server.capacity
-        row.sum = sum
+        row.sum = sum([server.capacity for server in row.servers if server in pool.servers])
     rows.sort(key=lambda row: row.sum)
 
 
