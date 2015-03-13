@@ -164,10 +164,8 @@ def parse_input(path):
         size, capacity = (int(i) for i in line.split())
         servers.append(Server(capacity, size))
 
-    # close the input file
     file.close()
 
-    # return the outputs
     return pools_num, rows, servers
 
 
