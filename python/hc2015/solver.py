@@ -171,7 +171,7 @@ def parse_input(path):
     return pools_num, rows, servers
 
 
-def generate_output(servers, path_to_output):
+def write_commands(servers, path_to_output):
     fo = open(path_to_output, "w")
 
     for server in servers:
@@ -191,18 +191,8 @@ def main():
     pools = [Pool(pool_num) for pool_num in range(pools_num)]
     allocate_servers(servers, pools, rows)
 
-    for pool in pools:
-        print pool.servers
-    for row in rows:
-        print row.servers
-
-    generate_output(servers_copy, 'outputs/commands.txt')
-
-    # write_output(output, 'outputs/output-small.txt')
-    # write_commands(commands, 'outputs/commands.txt')
+    write_commands(servers_copy, 'outputs/commands.txt')
 
 
 if __name__ == '__main__':
     main()
-
-

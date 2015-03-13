@@ -1,10 +1,5 @@
 import unittest
 
-# memo: keyboard shortcuts in PyCharm:
-# run all tests:      Control Shift R
-# run single test:    inside the test method body, Control Shift R
-#   re-run last:        Control R
-
 import solver
 from solver import Server
 
