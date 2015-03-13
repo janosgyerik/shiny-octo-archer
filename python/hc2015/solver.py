@@ -55,12 +55,11 @@ class Pool:
 class Row:
     def __init__(self, row_num, slots_num):
         self.row_num = row_num
-        self.servers = []
         self.slots = [True] * slots_num
+        self.servers = []
 
     def mark_unavailable(self, start, size):
-        for i in range(start, start + size):
-            self.slots[i] = False
+        self.slots[start:start + size] = [False for _ in range(size)]
 
     def get_available_slot(self, space):
         start = 0
