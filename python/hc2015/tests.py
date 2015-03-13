@@ -12,9 +12,10 @@ class TestSolver(unittest.TestCase):
         self.assertEquals(expected, solver.servers_sorted_by_score(servers))
 
     def test_parse_input(self):
-        pools_num, rows, servers = solver.parse_input('inputs/small.txt')
-        self.assertEquals(2, pools_num)
+        pools, rows, servers = solver.parse_input('inputs/small.txt')
+        self.assertEquals(2, len(pools))
         self.assertEquals(2, len(rows))
+        self.assertEquals(5, len(servers))
 
     def test_get_available_slot(self):
         row = solver.Row(0, 8)
