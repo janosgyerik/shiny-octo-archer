@@ -113,8 +113,9 @@ class Row:
         return str(self.row_num)
 
 
-def sort_pools_by_guaranteed_capacity(pools):
+def pools_sorted_by_guaranteed_capacity(pools):
     pools.sort(key=lambda pool: pool.calc_guaranteed_capacity())
+    return pools
 
 
 def sort_rows_by_pool_use(rows, pool):
@@ -127,11 +128,13 @@ def sort_rows_by_pool_use(rows, pool):
     rows.sort(key=lambda row: row.sum)
 
 
+def servers_sorted_by_score(servers):
+    return sorted(servers, key=lambda server: server.score, reverse=True)
+
+
 def allocate_servers(servers, pools, rows):
-    servers.sort(key=lambda server: server.score, reverse=True)
-    for server in servers:
-        sort_pools_by_guaranteed_capacity(pools)
-        pool = pools[0]
+    for server in servers_sorted_by_score(servers):
+        pool = pools_sorted_by_guaranteed_capacity(pools)[0]
         server.add_to_pool(pool)
 
         sort_rows_by_pool_use(rows, pool)
@@ -141,8 +144,7 @@ def allocate_servers(servers, pools, rows):
 
 
 def get_server_rank(servers):
-    newlist = sorted(servers, key=lambda server: server.score, reverse=True)
-    return newlist
+    return sorted(servers, key=lambda server: server.score, reverse=True)
 
 
 def parse_input(path):
@@ -181,11 +183,11 @@ def write_commands(servers, path_to_output):
 def main():
     # pools, rows, servers = parse_input('inputs/small.txt')
     pools, rows, servers = parse_input('inputs/large.txt')
-    servers_copy = servers[:]
+    servers_orig_order = servers[:]
 
     allocate_servers(servers, pools, rows)
 
-    write_commands(servers_copy, 'outputs/commands.txt')
+    write_commands(servers_orig_order, 'outputs/commands.txt')
 
 
 if __name__ == '__main__':
