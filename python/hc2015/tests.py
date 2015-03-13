@@ -9,7 +9,7 @@ class TestSolver(unittest.TestCase):
         s1, s2, s3 = Server(10, 10), Server(10, 2), Server(10, 5)
         servers = [s1, s2, s3]
         expected = [s2, s3, s1]
-        self.assertEquals(expected, solver.get_server_rank(servers))
+        self.assertEquals(expected, solver.servers_sorted_by_score(servers))
 
     def test_parse_input(self):
         pools_num, rows, servers = solver.parse_input('inputs/small.txt')

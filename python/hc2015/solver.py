@@ -143,10 +143,6 @@ def allocate_servers(servers, pools, rows):
                 break
 
 
-def get_server_rank(servers):
-    return sorted(servers, key=lambda server: server.score, reverse=True)
-
-
 def parse_input(path):
     with open(path) as fh:
         line = fh.readline()
