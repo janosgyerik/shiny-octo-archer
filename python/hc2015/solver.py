@@ -164,7 +164,9 @@ def parse_input(path):
             size, capacity = (int(i) for i in line.split())
             servers.append(Server(capacity, size))
 
-    return pools_num, rows, servers
+    pools = [Pool(pool_num) for pool_num in range(pools_num)]
+
+    return pools, rows, servers
 
 
 def write_commands(servers, path_to_output):
@@ -177,11 +179,10 @@ def write_commands(servers, path_to_output):
 
 
 def main():
-    # pools_num, rows, servers = parse_input('inputs/small.txt')
-    pools_num, rows, servers = parse_input('inputs/large.txt')
+    # pools, rows, servers = parse_input('inputs/small.txt')
+    pools, rows, servers = parse_input('inputs/large.txt')
     servers_copy = servers[:]
 
-    pools = [Pool(pool_num) for pool_num in range(pools_num)]
     allocate_servers(servers, pools, rows)
 
     write_commands(servers_copy, 'outputs/commands.txt')
