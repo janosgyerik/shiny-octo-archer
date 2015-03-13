@@ -38,13 +38,12 @@ class Pool:
         row_capacities = {}
         total_capacity = 0
         for server in self.servers:
-            if server.pool is self:
-                row = server.row
-                if row in row_capacities:
-                    row_capacities[row] += server.capacity
-                else:
-                    row_capacities[row] = server.capacity
-                total_capacity += server.capacity
+            row = server.row
+            if row in row_capacities:
+                row_capacities[row] += server.capacity
+            else:
+                row_capacities[row] = server.capacity
+            total_capacity += server.capacity
 
         lowest_capacity = total_capacity
 
