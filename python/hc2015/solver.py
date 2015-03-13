@@ -6,18 +6,14 @@ class Server:
     def __init__(self, capacity, size):
         self.capacity = capacity
         self.size = size
+        self.score = capacity * capacity / size
         self.pool = None
         self.row = None
-        self.score = capacity * capacity / size
         self.slot = None
 
     def add_to_pool(self, pool):
-        pool.add(self)
+        pool.add_server(self)
         self.pool = pool
-
-    def add_to_row(self, row):
-        row.add(self)
-        self.row = row
 
     def __repr__(self):
         return '{} {}'.format(self.capacity, self.size)
@@ -28,7 +24,7 @@ class Pool:
         self.pool_num = pool_num
         self.servers = []
 
-    def add(self, server):
+    def add_server(self, server):
         self.servers.append(server)
 
     def calc_guaranteed_capacity(self):
@@ -79,9 +75,6 @@ class Row:
         self.servers = []
         self.slots = [True] * slots_num
 
-    def add(self, server):
-        self.servers.append(server)
-
     def mark_unavailable(self, start, size):
         for i in range(start, start + size):
             self.slots[i] = False
@@ -101,12 +94,14 @@ class Row:
 
     def add_server(self, server):
         slot = self.get_available_slot(server.size)
+
         if slot is not None:
             server.slot = slot
             server.row = self
             self.mark_unavailable(slot, server.size)
-            self.add(server)
+            self.servers.append(server)
             return True
+
         return False
 
     def __str__(self):
