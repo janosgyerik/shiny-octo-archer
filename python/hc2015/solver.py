@@ -1,4 +1,5 @@
 from __future__ import division
+from __future__ import print_function
 
 
 class Server:
@@ -145,40 +146,34 @@ def get_server_rank(servers):
 
 
 def parse_input(path):
-    file = open(path, 'r+')
+    with open(path) as fh:
+        line = fh.readline()
+        rows_num, slots_num, unavailable_slots_num, pools_num, servers_num = (int(i) for i in line.split())
 
-    line = file.readline()
-    rows_num, slots_num, unavailable_slots_num, pools_num, servers_num = (int(i) for i in line.split())
+        rows = [Row(row_num, slots_num) for row_num in range(rows_num)]
+        servers = []
 
-    rows = [Row(row_num, slots_num) for row_num in range(rows_num)]
-    servers = []
+        for _ in range(unavailable_slots_num):
+            line = fh.readline()
+            row_num, slot_num = (int(i) for i in line.split())
+            row = rows[row_num]
+            row.mark_unavailable(slot_num, 1)
 
-    for i in xrange(unavailable_slots_num):
-        line = file.readline()
-        row_num, slot_num = (int(i) for i in line.split())
-        row = rows[row_num]
-        row.mark_unavailable(slot_num, 1)
-
-    for i in xrange(servers_num):
-        line = file.readline()
-        size, capacity = (int(i) for i in line.split())
-        servers.append(Server(capacity, size))
-
-    file.close()
+        for _ in range(servers_num):
+            line = fh.readline()
+            size, capacity = (int(i) for i in line.split())
+            servers.append(Server(capacity, size))
 
     return pools_num, rows, servers
 
 
 def write_commands(servers, path_to_output):
-    fo = open(path_to_output, "w")
-
-    for server in servers:
-        if server.row is None:
-            fo.write("x\n")
-        else:
-            fo.write(str(server.row) + " " + str(server.slot) + " " + str(server.pool) + "\n")
-
-    fo.close()
+    with open(path_to_output, "w") as fo:
+        for server in servers:
+            if server.row is None:
+                fo.write("x\n")
+            else:
+                fo.write('{} {} {}\n'.format(server.row, server.slot, server.pool))
 
 
 def main():
