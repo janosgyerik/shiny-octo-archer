@@ -5,7 +5,7 @@ from solver import Server
 
 
 class TestSolver(unittest.TestCase):
-    def test_get_server_rank(self):
+    def test_servers_sorted_by_score(self):
         big_but_average, small_and_powerful, medium = Server(10, 10), Server(2, 10), Server(5, 10)
         servers = [big_but_average, small_and_powerful, medium]
         expected = [small_and_powerful, medium, big_but_average]
