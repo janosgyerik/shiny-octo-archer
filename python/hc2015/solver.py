@@ -15,6 +15,10 @@ class Server:
         pool.add_server(self)
         self.pool = pool
 
+    def undo_add_to_pool(self):
+        self.pool.undo_add_server()
+        self.pool = None
+
     def __repr__(self):
         return '{} {}'.format(self.capacity, self.size)
 
@@ -26,6 +30,9 @@ class Pool:
 
     def add_server(self, server):
         self.servers.append(server)
+
+    def undo_add_server(self):
+        self.servers = self.servers[:-1]
 
     def calc_guaranteed_capacity(self):
         row_capacities = {}
@@ -129,6 +136,8 @@ def allocate_servers(servers, pools, rows):
         for row in rows:
             if row.add_server(server):
                 break
+        else:
+            server.undo_add_to_pool()
 
 
 def parse_input(path):
