@@ -52,23 +52,6 @@ class Pool:
         return str(self.pool_num)
 
 
-def find_worst_pool(pools):
-    if len(pools) < 1:
-        return None
-
-    # initiate minimum capacity and minimum pool
-    first_pool = pools[0]
-    min_capacity = first_pool.calc_guaranteed_capacity()
-    min_pool = first_pool
-    # go through all the pools and compare them to the minimum
-    for pool in pools:
-        if pool.calc_guaranteed_capacity() < min_capacity:
-            min_capacity = pool.calc_guaranteed_capacity()
-            min_pool = pool
-
-    return min_pool
-
-
 class Row:
     def __init__(self, row_num, slots_num):
         self.row_num = row_num
