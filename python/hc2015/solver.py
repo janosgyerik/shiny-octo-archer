@@ -122,20 +122,20 @@ def allocate_servers(servers, pools, rows):
 def parse_input(path):
     with open(path) as fh:
         line = fh.readline()
-        rows_num, slots_num, unavailable_slots_num, pools_num, servers_num = (int(i) for i in line.split())
+        rows_num, slots_num, unavailable_slots_num, pools_num, servers_num = (int(x) for x in line.split())
 
         rows = [Row(row_num, slots_num) for row_num in range(rows_num)]
         servers = []
 
         for _ in range(unavailable_slots_num):
             line = fh.readline()
-            row_num, slot_num = (int(i) for i in line.split())
+            row_num, slot_num = (int(x) for x in line.split())
             row = rows[row_num]
             row.mark_unavailable(slot_num, 1)
 
         for _ in range(servers_num):
             line = fh.readline()
-            size, capacity = (int(i) for i in line.split())
+            size, capacity = (int(x) for x in line.split())
             servers.append(Server(capacity, size))
 
     pools = [Pool(pool_num) for pool_num in range(pools_num)]
