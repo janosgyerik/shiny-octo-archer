@@ -48,6 +48,18 @@ class Pool:
 
         return lowest_capacity
 
+    def calc_row_capacities(self):
+        row_capacities = {}
+        for server in self.servers:
+            row = server.row
+            if row:
+                if row in row_capacities:
+                    row_capacities[row] += server.capacity
+                else:
+                    row_capacities[row] = server.capacity
+
+        return [capacity for _, capacity in sorted(row_capacities.items(), key=lambda (x, _): x.row_num)]
+
     def __str__(self):
         return str(self.pool_num)
 
@@ -152,12 +164,24 @@ def write_allocations(servers, path_to_output):
                 fo.write('{} {} {}\n'.format(server.row, server.slot, server.pool))
 
 
+def print_pool_stats(pools):
+    for pool in pools:
+        print('\t'.join([str(x) for x in [pool.pool_num] + pool.calc_row_capacities() + [pool.calc_guaranteed_capacity()]]))
+
+
+def calc_min_guaranteed_capacity(pools):
+    return min([pool.calc_guaranteed_capacity() for pool in pools])
+
+
 def main():
     # pools, rows, servers = parse_input('inputs/small.txt')
     pools, rows, servers = parse_input('inputs/large.txt')
     servers_orig_order = servers[:]
 
     allocate_servers(servers, pools, rows)
+
+    # print_pool_stats(pools)
+    # print(calc_min_guaranteed_capacity(pools))
 
     write_allocations(servers_orig_order, 'outputs/commands.txt')
 
