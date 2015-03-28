@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+import random
+
 
 def to_int(*args):
     return [int(x) for x in args]
@@ -8,7 +10,7 @@ with open('inputs/large.txt') as fh:
     _, _, B, T = to_int(*fh.readline().split(' '))
 
 print(' '.join(['1' for _ in range(B)]))
-
+heights = [1] * B
 
 def get_movement(turn, i):
     if turn > A:
@@ -20,5 +22,22 @@ def get_movement(turn, i):
     return 1
 
 
+def get_possible_moves(i):
+    height = heights[i]
+    if i == 0:
+        return [1]
+    moves = []
+    if i > 1:
+        moves.append(-1)
+    if i < A:
+        moves.append(1)
+    return moves
+
+
+def get_random_movement(turn, i):
+    movement = random.choice(get_possible_moves(heights[i]))
+    heights[i] += movement
+    return movement
+
 for turn in range(T - 1):
-    print(' '.join([str(get_movement(turn, i)) for i in range(B)]))
+    print(' '.join([str(get_random_movement(turn, i)) for i in range(B)]))
