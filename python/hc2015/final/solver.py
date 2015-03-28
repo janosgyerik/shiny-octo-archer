@@ -25,7 +25,10 @@ class Balloon:
         self.numberRows = numberRows
         self.numberColumns = numberColumns
         self.coverageRadius = coverageRadius
-    
+
+    def copy(self):
+        return Balloon(-1, self.row, self.column, self.altitude, self.windmaps, self.numberRows, self.numberColumns, self.coverageRadius)
+
     #if the target row and column are out of range, return False
     def getDistanceToTarget(self, targetRow, targetColumn):
         if targetRow < 0 or targetRow >= self.numberRows:
@@ -53,9 +56,45 @@ class Balloon:
                         minDist = dist
                         minTarget = (tr,tc)
         return minTarget
-        
-    
-    
+
+    def find_nearest_reachable_target(self, targets):
+        queue = []
+        for movement in self.get_possible_moves():
+            new_balloon = self.copy()
+            new_balloon.move(movement)
+            if new_balloon.isActive:
+                queue.append((movement, new_balloon))
+
+        depth = 1
+        while queue and depth < 3:
+            depth += 1
+            level = queue[:]
+            queue = []
+
+            # start_movement, item = queue.pop(0)
+            for start_movement, item in level:
+                possible_target = self.find_target_within_range(targets)
+                if possible_target:
+                    return start_movement, possible_target
+
+                for movement in item.get_possible_moves():
+                    new_balloon = item.copy()
+                    new_balloon.move(movement)
+                    if new_balloon.isActive:
+                        queue.append((start_movement, new_balloon))
+
+        # could not find
+        if self.altitude == -1:
+            return 1, None
+        return 0, None
+
+    def find_target_within_range(self, targets):
+        target_x = (self.row, self.column)
+        radius = self.coverageRadius
+        for target in targets:
+            if target_x[0] - radius <= target[0] <= target_x[0] + radius and target_x[1] - radius <= target[1] <= target_x[1] + radius:
+                return target
+
     def calc_level_movement(self, target):
         """ returns: -1, 0, 1 """
         min_distance = 99999999
@@ -179,11 +218,13 @@ def main():
                     movements.append(0)
                     continue
                 if b.isActive:
-                    target = b.find_nearest_target(targets)
-                    movement = b.calc_level_movement(target)
+                    # target = b.find_nearest_target(targets)
+                    # movement = b.calc_level_movement(target)
+                    movement, target = b.find_nearest_reachable_target(targets)
                     b.move(movement)
                     movements.append(movement)
-                    targets = get_uncovered_targets(targets, target, b.coverageRadius)
+                    if target:
+                        targets = get_uncovered_targets(targets, target, b.coverageRadius)
                 else:
                     movements.append(0)
             # print('{}\n'.format(movement))
