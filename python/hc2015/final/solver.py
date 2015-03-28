@@ -54,9 +54,18 @@ class Balloon:
         """ returns: -1, 0, 1 """
         min_distance = 99999999
         best_movement = 0
+        maxRow = -1
         for movement in self.get_possible_moves():
             distance = self.calc_distance_after_move(movement, target)
-            if distance < min_distance:
+            ### IF WITHIN COVERAGE RADIUS OF BOUNDARY 
+                #, CHOOSE MOVEMENT WITH MAX GETPOSITIONAFTERWINDBLOWS[ROW]
+            if self.row < self.coverageRadius*3:
+                windMap = self.windmaps[self.altitude + movement]
+                nextRow = windMap.getPositionAfterWindBlows((self.row, self.column))[0]
+                if nextRow > maxRow:
+                    maxRow = nextRow
+                    best_movement = movement
+            elif distance < min_distance:
                 min_distance = distance
                 best_movement = movement
         return best_movement
@@ -138,7 +147,14 @@ def parse_input(path):
         
        
     
-
+def get_uncovered_targets(targets, target_x, radius):
+    new_targets = []
+    for target in targets:
+        if not target_x[0] - radius <= target[0] <= target_x[0] + radius:
+            new_targets.append(target)
+        elif not target_x[1] - radius <= target[1] <= target_x[1] + radius:
+            new_targets.append(target)
+    return new_targets
 
 
 def main():
@@ -152,12 +168,15 @@ def main():
             targets = targets0[:]
             movements = []
             for b in balloons:
+                if not targets:
+                    movements.append(0)
+                    continue
                 if b.isActive:
                     target = b.find_nearest_target(targets)
                     movement = b.calc_level_movement(target)
                     b.move(movement)
                     movements.append(movement)
-                    targets.remove(target)
+                    targets = get_uncovered_targets(targets, target, b.coverageRadius)
                 else:
                     movements.append(0)
             # print('{}\n'.format(movement))
