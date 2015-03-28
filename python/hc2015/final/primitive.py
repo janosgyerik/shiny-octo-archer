@@ -22,14 +22,13 @@ def get_movement(turn, i):
     return 1
 
 
-def get_possible_moves(i):
-    height = heights[i]
-    if i == 0:
+def get_possible_moves(height):
+    if height == 0:
         return [1]
     moves = []
-    if i > 1:
+    if height > 1:
         moves.append(-1)
-    if i < A:
+    if height < A:
         moves.append(1)
     return moves
 
