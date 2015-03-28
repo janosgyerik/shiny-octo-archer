@@ -15,9 +15,9 @@ def get_movement(turn, i):
         return 0
 
     target_balloons_per_alt = B / A
-    if i < target_balloons_per_alt * turn:
-        return 1
-    return 0
+    if i < target_balloons_per_alt * (turn + 1):
+        return 0
+    return 1
 
 
 for turn in range(T - 1):
