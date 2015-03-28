@@ -9,5 +9,16 @@ with open('inputs/large.txt') as fh:
 
 print(' '.join(['1' for _ in range(B)]))
 
-for _ in range(T - 1):
-    print(' '.join(['0' for _ in range(B)]))
+
+def get_movement(turn, i):
+    if turn > A:
+        return 0
+
+    target_balloons_per_alt = B / A
+    if i < target_balloons_per_alt * turn:
+        return 1
+    return 0
+
+
+for turn in range(T - 1):
+    print(' '.join([str(get_movement(turn, i)) for i in range(B)]))
