@@ -43,9 +43,15 @@ class Balloon:
         minTarget = None
         for (tr,tc) in targets:
             dist = self.getDistanceToTarget(tr,tc)
-            if dist < minDist:
-                minDist = dist
-                minTarget = (tr,tc)
+            if tc >= self.column:
+                if dist < minDist:
+                    minDist = dist
+                    minTarget = (tr,tc)
+            else:
+                if minTarget == None:
+                    if dist < minDist:
+                        minDist = dist
+                        minTarget = (tr,tc)
         return minTarget
         
     
@@ -59,11 +65,12 @@ class Balloon:
             distance = self.calc_distance_after_move(movement, target)
             ### IF WITHIN COVERAGE RADIUS OF BOUNDARY 
                 #, CHOOSE MOVEMENT WITH MAX GETPOSITIONAFTERWINDBLOWS[ROW]
-            if self.row < self.coverageRadius*3:
+            # if self.row < self.coverageRadius*3 and 100<self.column<150:
+            if (self.row < self.coverageRadius*4 and 100<self.column<150) or self.row < self.coverageRadius*2:
                 windMap = self.windmaps[self.altitude + movement]
                 nextRow = windMap.getPositionAfterWindBlows((self.row, self.column))[0]
                 if nextRow > maxRow:
-                    maxRow = nextRow
+                    maxRow = nextRow    
                     best_movement = movement
             elif distance < min_distance:
                 min_distance = distance
